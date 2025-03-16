@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BoardingBliss - Southwest Check-in</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+    }
+    .card {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      padding: 1.5rem;
+    }
+    .btn-primary {
+      background-color: #304CB2;
+      color: white;
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .btn-primary:hover {
+      background-color: #263a8c;
+    }
+    .input-field {
+      width: 100%;
+      padding: 0.5rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div class="max-w-4xl mx-auto p-4 md:p-8">
+    <div class="text-center mb-10">
+      <h1 class="text-4xl font-bold text-[#304CB2] mb-4">BoardingBliss</h1>
+      <p class="text-lg">Automatic Southwest Airlines Check-in Service</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="card">
+        <h2 class="text-2xl font-semibold mb-6">Schedule Check-in</h2>
+        <form id="check-in-form">
+          <div class="mb-4">
+            <label for="confirmationNumber" class="block text-sm font-medium text-gray-700 mb-1">
+              Confirmation Number
+            </label>
+            <input type="text" id="confirmationNumber" name="confirmationNumber" class="input-field" required placeholder="e.g. ABC123" maxlength="6">
+          </div>
+
+          <div class="mb-4">
+            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">
+              First Name
+            </label>
+            <input type="text" id="firstName" name="firstName" class="input-field" required placeholder="e.g. John">
+          </div>
+
+          <div class="mb-6">
+            <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">
+              Last Name
+            </label>
+            <input type="text" id="lastName" name="lastName" class="input-field" required placeholder="e.g. Smith">
+          </div>
+
+          <button type="submit" class="w-full btn-primary">
+            Schedule Check-in
+          </button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2 class="text-2xl font-semibold mb-6">Check-in Status</h2>
+        <div id="status-container" class="text-center p-8">
+          <p class="text-gray-500">
+            Submit the form to check your flight status
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 text-center text-sm text-gray-500">
+      <p>
+        BoardingBliss automatically checks you in to your Southwest flight exactly 24 hours before departure.
+      </p>
+      <p class="mt-2">
+        Your information is never stored and is only used to schedule your check-in.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('check-in-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const statusContainer = document.getElementById('status-container');
+      statusContainer.innerHTML = '<p class="text-blue-500">Processing check-in request...</p>';
+      
+      const formData = {
+        confirmationNumber: document.getElementById('confirmationNumber').value,
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value
+      };
+      
+      try {
+        // In a real implementation, this would send data to your backend
+        // For now, we'll just simulate a successful response
+        
+        setTimeout(() => {
+          const successResponse = {
+            success: true,
+            message: 'Check-in scheduled successfully',
+            data: {
+              flightInfo: `for ${formData.firstName} ${formData.lastName}\nFlight from Las Vegas to Chicago (Midway) on 2025-03-18 3:50 PM PDT`
+            }
+          };
+          
+          displayResponse(successResponse);
+        }, 1500);
+        
+      } catch (error) {
+        console.error('Error:', error);
+        displayResponse({
+          success: false,
+          message: 'Failed to schedule check-in. Please try again.'
+        });
+      }
+    });
+    
+    function displayResponse(response) {
+      const statusContainer = document.getElementById('status-container');
+      
+      if (response.success) {
+        statusContainer.innerHTML = `
+          <div class="p-4 rounded-md bg-green-50 border border-green-200">
+            <h3 class="text-lg font-medium text-green-800">Success!</h3>
+            <p class="mt-2">${response.message}</p>
+            
+            ${response.data?.flightInfo ? `
+              <div class="mt-4 p-3 bg-gray-50 rounded-md">
+                <h4 class="font-medium mb-2">Flight Details:</h4>
+                <p class="whitespace-pre-line">${response.data.flightInfo}</p>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      } else {
+        statusContainer.innerHTML = `
+          <div class="p-4 rounded-md bg-red-50 border border-red-200">
+            <h3 class="text-lg font-medium text-red-800">Error</h3>
+            <p class="mt-2">${response.message}</p>
+          </div>
+        `;
+      }
+    }
+  </script>
+</body>
+</html> 

@@ -1,16 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": "nextjs",
   "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "server.js", "use": "@vercel/node" }
   ],
-  "env": {
-    "VERCEL_API_KEY": "iTXRQCs5keUu7Jhzjo6UApkM"
-  }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "server.js" },
+    { "src": "/(.*)", "dest": "index.html" }
+  ]
 } 

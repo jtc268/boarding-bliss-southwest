@@ -7,14 +7,12 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Enable CORS for the Next.js front-end
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? 'https://boardingbliss.vercel.app' 
-    : 'http://localhost:3000'
-}));
-
+// Enable CORS
+app.use(cors());
 app.use(express.json());
+
+// Serve static files
+app.use(express.static(path.join(__dirname)));
 
 // API endpoint to schedule check-in
 app.post('/api/schedule-checkin', (req, res) => {
@@ -24,9 +22,6 @@ app.post('/api/schedule-checkin', (req, res) => {
   if (!confirmationNumber || !firstName || !lastName) {
     return res.status(400).json({ success: false, message: 'Missing required fields' });
   }
-  
-  // Path to the Python script
-  const pythonScriptPath = path.join(__dirname, '../auto-southwest-check-in/southwest.py');
   
   // Build the command - using quotes around names to handle spaces
   const command = `cd ../auto-southwest-check-in && python3 southwest.py ${confirmationNumber} "${firstName}" "${lastName}"`;
@@ -38,11 +33,6 @@ app.post('/api/schedule-checkin', (req, res) => {
     if (error) {
       console.error(`Error: ${error.message}`);
       return res.status(500).json({ success: false, message: error.message });
-    }
-    
-    if (stderr) {
-      console.error(`Stderr: ${stderr}`);
-      // Not returning an error as stderr might contain warnings
     }
     
     console.log(`Stdout: ${stdout}`);
@@ -70,25 +60,9 @@ app.post('/api/schedule-checkin', (req, res) => {
   });
 });
 
-// API endpoint to check status
-app.get('/api/status', (req, res) => {
-  // Execute ps command to check if the Python script is running
-  exec('ps aux | grep southwest.py | grep -v grep', (error, stdout, stderr) => {
-    const isRunning = stdout.trim().length > 0;
-    
-    res.status(200).json({
-      success: true,
-      isRunning,
-      processes: stdout.split('\n').filter(line => line.trim().length > 0).map(line => {
-        const parts = line.trim().split(/\s+/);
-        // Extract relevant information from ps output
-        return {
-          pid: parts[1],
-          command: parts.slice(10).join(' ')
-        };
-      })
-    });
-  });
+// Default route to serve the HTML
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, () => {
