@@ -4,7 +4,13 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "nextjs",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
   "env": {
-    "API_URL": "https://your-api-server-url.com"
+    "VERCEL_API_KEY": "iTXRQCs5keUu7Jhzjo6UApkM"
   }
 } 
