@@ -23,6 +23,13 @@ app.post('/api/schedule-checkin', (req, res) => {
     return res.status(400).json({ success: false, message: 'Missing required fields' });
   }
   
+  // Add detailed logging
+  console.log('Received check-in request:');
+  console.log('Confirmation Number:', confirmationNumber);
+  console.log('First Name:', firstName);
+  console.log('Last Name:', lastName);
+  console.log('Current directory:', __dirname);
+  
   // Build the command - using quotes around names to handle spaces
   const command = `cd ../auto-southwest-check-in && python3 southwest.py ${confirmationNumber} "${firstName}" "${lastName}"`;
   
@@ -36,6 +43,10 @@ app.post('/api/schedule-checkin', (req, res) => {
     }
     
     console.log(`Stdout: ${stdout}`);
+    
+    if (stderr) {
+      console.error(`Stderr: ${stderr}`);
+    }
     
     // Check if the script was successful
     if (stdout.includes('Successfully scheduled')) {
