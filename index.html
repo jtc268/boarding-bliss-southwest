@@ -147,6 +147,13 @@
                 <p class="whitespace-pre-line">${response.data.flightInfo}</p>
               </div>
             ` : ''}
+            
+            ${response.data?.output ? `
+              <div class="mt-4 p-3 bg-gray-50 rounded-md">
+                <h4 class="font-medium mb-2">Terminal Output:</h4>
+                <pre class="whitespace-pre-wrap text-sm font-mono overflow-x-auto p-2 bg-gray-100 rounded">${response.data.output}</pre>
+              </div>
+            ` : ''}
           </div>
         `;
       } else {
@@ -154,6 +161,13 @@
           <div class="p-4 rounded-md bg-red-50 border border-red-200">
             <h3 class="text-lg font-medium text-red-800">Error</h3>
             <p class="mt-2">${response.message}</p>
+            
+            ${response.data?.output ? `
+              <div class="mt-4 p-3 bg-gray-50 rounded-md">
+                <h4 class="font-medium mb-2">Terminal Output:</h4>
+                <pre class="whitespace-pre-wrap text-sm font-mono overflow-x-auto p-2 bg-gray-100 rounded">${response.data.output}</pre>
+              </div>
+            ` : ''}
           </div>
         `;
       }
