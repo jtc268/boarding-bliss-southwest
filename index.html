@@ -96,6 +96,9 @@
   </div>
 
   <script>
+    // Replace this with your ngrok URL once the server is running
+    const API_URL = 'https://boardingbliss.loca.lt/api/schedule-checkin';
+    
     document.getElementById('check-in-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       
@@ -109,26 +112,22 @@
       };
       
       try {
-        // In a real implementation, this would send data to your backend
-        // For now, we'll just simulate a successful response
+        // Make a real API call to the backend
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
         
-        setTimeout(() => {
-          const successResponse = {
-            success: true,
-            message: 'Check-in scheduled successfully',
-            data: {
-              flightInfo: `for ${formData.firstName} ${formData.lastName}\nFlight from Las Vegas to Chicago (Midway) on 2025-03-18 3:50 PM PDT`
-            }
-          };
-          
-          displayResponse(successResponse);
-        }, 1500);
-        
+        const data = await response.json();
+        displayResponse(data);
       } catch (error) {
         console.error('Error:', error);
         displayResponse({
           success: false,
-          message: 'Failed to schedule check-in. Please try again.'
+          message: 'Failed to connect to the server. Please try again later.'
         });
       }
     });
